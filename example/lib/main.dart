@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Toast"),
+        title: Text("Toas212121212t"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,7 +1,7 @@
-name: fluttertoast
+name: fluttertoast_renameuiviewtoast
 description: Toast Library for Flutter, Easily create toast messages in single line of code
 version: 7.0.2
-homepage: https://github.com/PonnamKarthik/FlutterToast
+homepage: https://github.com/hc2088/FlutterToast
 issue_tracker: https://github.com/ponnamkarthik/FlutterToast/issues
 
 environment:

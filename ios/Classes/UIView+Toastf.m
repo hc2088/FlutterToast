@@ -23,131 +23,131 @@
 //  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 //  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "UIView+Toast.h"
+#import "UIView+Toastf.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 
-NSString * CSToastPositionTop       = @"CSToastPositionTop";
-NSString * CSToastPositionCenter    = @"CSToastPositionCenter";
-NSString * CSToastPositionBottom    = @"CSToastPositionBottom";
+NSString * CSFToastPositionTop       = @"CSFToastPositionTop";
+NSString * CSFToastPositionCenter    = @"CSFToastPositionCenter";
+NSString * CSFToastPositionBottom    = @"CSFToastPositionBottom";
 
 // Keys for values associated with toast views
-static const NSString * CSToastTimerKey             = @"CSToastTimerKey";
-static const NSString * CSToastDurationKey          = @"CSToastDurationKey";
-static const NSString * CSToastPositionKey          = @"CSToastPositionKey";
-static const NSString * CSToastCompletionKey        = @"CSToastCompletionKey";
+static const NSString * CSFToastTimerKey             = @"CSFToastTimerKey";
+static const NSString * CSFToastDurationKey          = @"CSFToastDurationKey";
+static const NSString * CSFToastPositionKey          = @"CSFToastPositionKey";
+static const NSString * CSFToastCompletionKey        = @"CSFToastCompletionKey";
 
 // Keys for values associated with self
-static const NSString * CSToastActiveKey            = @"CSToastActiveKey";
-static const NSString * CSToastActiveToastViewKey   = @"CSToastActiveToastViewKey";
-static const NSString * CSToastActivityViewKey      = @"CSToastActivityViewKey";
-static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
+static const NSString * CSFToastActiveKey            = @"CSFToastActiveKey";
+static const NSString * CSFToastActiveToastViewKey   = @"CSFToastActiveToastViewKey";
+static const NSString * CSFToastActivityViewKey      = @"CSFToastActivityViewKey";
+static const NSString * CSFToastQueueKey             = @"CSFToastQueueKey";
 
-@interface UIView (ToastPrivate)
+@interface UIView (ToastPrivatef)
 
 /**
- These private methods are being prefixed with "cs_" to reduce the likelihood of non-obvious 
+ These private methods are being prefixed with "CSF_" to reduce the likelihood of non-obvious
  naming conflicts with other UIView methods.
  
- @discussion Should the public API also use the cs_ prefix? Technically it should, but it
+ @discussion Should the public API also use the CSF_ prefix? Technically it should, but it
  results in code that is less legible. The current public method names seem unlikely to cause
  conflicts so I think we should favor the cleaner API for now.
  */
-- (void)cs_showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position;
-- (void)cs_hideToast:(UIView *)toast;
-- (void)cs_hideToast:(UIView *)toast fromTap:(BOOL)fromTap;
-- (void)cs_toastTimerDidFinish:(NSTimer *)timer;
-- (void)cs_handleToastTapped:(UITapGestureRecognizer *)recognizer;
-- (CGPoint)cs_centerPointForPosition:(id)position withToast:(UIView *)toast;
-- (NSMutableArray *)cs_toastQueue;
+- (void)CSF_showToastf:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position;
+- (void)CSF_hideToastf:(UIView *)toast;
+- (void)CSF_hideToastf:(UIView *)toast fromTap:(BOOL)fromTap;
+- (void)CSF_toastTimerDidFinish:(NSTimer *)timer;
+- (void)CSF_handleToastTapped:(UITapGestureRecognizer *)recognizer;
+- (CGPoint)CSF_centerPointForPosition:(id)position withToast:(UIView *)toast;
+- (NSMutableArray *)CSF_toastQueue;
 
 @end
 
-@implementation UIView (Toast)
+@implementation UIView (Toastf)
 
 #pragma mark - Make Toast Methods
 
-- (void)makeToast:(NSString *)message {
-    [self makeToast:message duration:[CSToastManager defaultDuration] position:[CSToastManager defaultPosition] style:nil];
+- (void)makeToastf:(NSString *)message {
+    [self makeToastf:message duration:[CSFToastManager defaultDuration] position:[CSFToastManager defaultPosition] style:nil];
 }
 
-- (void)makeToast:(NSString *)message duration:(NSTimeInterval)duration position:(id)position {
-    [self makeToast:message duration:duration position:position style:nil];
+- (void)makeToastf:(NSString *)message duration:(NSTimeInterval)duration position:(id)position {
+    [self makeToastf:message duration:duration position:position style:nil];
 }
 
-- (void)makeToast:(NSString *)message duration:(NSTimeInterval)duration position:(id)position style:(CSToastStyle *)style {
-    UIView *toast = [self toastViewForMessage:message title:nil image:nil style:style];
-    [self showToast:toast duration:duration position:position completion:nil];
+- (void)makeToastf:(NSString *)message duration:(NSTimeInterval)duration position:(id)position style:(CSFToastStyle *)style {
+    UIView *toast = [self toastViewForMessagef:message title:nil image:nil style:style];
+    [self showToastf:toast duration:duration position:position completion:nil];
 }
 
-- (void)makeToast:(NSString *)message duration:(NSTimeInterval)duration position:(id)position title:(NSString *)title image:(UIImage *)image style:(CSToastStyle *)style completion:(void(^)(BOOL didTap))completion {
-    UIView *toast = [self toastViewForMessage:message title:title image:image style:style];
-    [self showToast:toast duration:duration position:position completion:completion];
+- (void)makeToastf:(NSString *)message duration:(NSTimeInterval)duration position:(id)position title:(NSString *)title image:(UIImage *)image style:(CSFToastStyle *)style completion:(void(^)(BOOL didTap))completion {
+    UIView *toast = [self toastViewForMessagef:message title:title image:image style:style];
+    [self showToastf:toast duration:duration position:position completion:completion];
 }
 
 #pragma mark - Show Toast Methods
 
-- (void)showToast:(UIView *)toast {
-    [self showToast:toast duration:[CSToastManager defaultDuration] position:[CSToastManager defaultPosition] completion:nil];
+- (void)showToastf:(UIView *)toast {
+    [self showToastf:toast duration:[CSFToastManager defaultDuration] position:[CSFToastManager defaultPosition] completion:nil];
 }
 
-- (void)showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position completion:(void(^)(BOOL didTap))completion {
+- (void)showToastf:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position completion:(void(^)(BOOL didTap))completion {
     // sanity
     if (toast == nil) return;
     
     // store the completion block on the toast view
-    objc_setAssociatedObject(toast, &CSToastCompletionKey, completion, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(toast, &CSFToastCompletionKey, completion, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
-    if ([CSToastManager isQueueEnabled] && objc_getAssociatedObject(self, &CSToastActiveToastViewKey) != nil) {
+    if ([CSFToastManager isQueueEnabled] && objc_getAssociatedObject(self, &CSFToastActiveToastViewKey) != nil) {
         // we're about to queue this toast view so we need to store the duration and position as well
-        objc_setAssociatedObject(toast, &CSToastDurationKey, @(duration), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        objc_setAssociatedObject(toast, &CSToastPositionKey, position, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(toast, &CSFToastDurationKey, @(duration), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(toast, &CSFToastPositionKey, position, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         
         // enqueue
-        [self.cs_toastQueue addObject:toast];
+        [self.CSF_toastQueue addObject:toast];
     } else {
         // present
-        [self cs_showToast:toast duration:duration position:position];
+        [self CSF_showToastf:toast duration:duration position:position];
     }
 }
 
 #pragma mark - Private Show/Hide Methods
 
-- (void)cs_showToast:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position {
-    toast.center = [self cs_centerPointForPosition:position withToast:toast];
+- (void)CSF_showToastf:(UIView *)toast duration:(NSTimeInterval)duration position:(id)position {
+    toast.center = [self CSF_centerPointForPosition:position withToast:toast];
     toast.alpha = 0.0;
     
-    if ([CSToastManager isTapToDismissEnabled]) {
-        UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cs_handleToastTapped:)];
+    if ([CSFToastManager isTapToDismissEnabled]) {
+        UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(CSF_handleToastTapped:)];
         [toast addGestureRecognizer:recognizer];
         toast.userInteractionEnabled = YES;
         toast.exclusiveTouch = YES;
     }
     
-    [[self cs_activeToasts] addObject:toast];
+    [[self CSF_activeToasts] addObject:toast];
     // set the active toast
-    objc_setAssociatedObject(self, &CSToastActiveToastViewKey, toast, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &CSFToastActiveToastViewKey, toast, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     [self addSubview:toast];
     
-    [UIView animateWithDuration:[[CSToastManager sharedStyle] fadeDuration]
+    [UIView animateWithDuration:[[CSFToastManager sharedStyle] fadeDuration]
                           delay:0.0
                         options:(UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionAllowUserInteraction)
                      animations:^{
                          toast.alpha = 1.0;
                      } completion:^(BOOL finished) {
-                         NSTimer *timer = [NSTimer timerWithTimeInterval:duration target:self selector:@selector(cs_toastTimerDidFinish:) userInfo:toast repeats:NO];
+                         NSTimer *timer = [NSTimer timerWithTimeInterval:duration target:self selector:@selector(CSF_toastTimerDidFinish:) userInfo:toast repeats:NO];
                          [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-                         objc_setAssociatedObject(toast, &CSToastTimerKey, timer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                         objc_setAssociatedObject(toast, &CSFToastTimerKey, timer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                      }];
 }
 
-- (void)cs_hideToast:(UIView *)toast {
-    [self cs_hideToast:toast fromTap:NO];
+- (void)CSF_hideToastf:(UIView *)toast {
+    [self CSF_hideToastf:toast fromTap:NO];
 }
     
-- (void)cs_hideToast:(UIView *)toast fromTap:(BOOL)fromTap {
-    [UIView animateWithDuration:[[CSToastManager sharedStyle] fadeDuration]
+- (void)CSF_hideToastf:(UIView *)toast fromTap:(BOOL)fromTap {
+    [UIView animateWithDuration:[[CSFToastManager sharedStyle] fadeDuration]
                           delay:0.0
                         options:(UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionBeginFromCurrentState)
                      animations:^{
@@ -156,36 +156,36 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
                          [toast removeFromSuperview];
                          
                          // clear the active toast
-                         objc_setAssociatedObject(self, &CSToastActiveToastViewKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                         objc_setAssociatedObject(self, &CSFToastActiveToastViewKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                          
                          // execute the completion block, if necessary
-                         void (^completion)(BOOL didTap) = objc_getAssociatedObject(toast, &CSToastCompletionKey);
+                         void (^completion)(BOOL didTap) = objc_getAssociatedObject(toast, &CSFToastCompletionKey);
                          if (completion) {
                              completion(fromTap);
                          }
                          
-                         if ([self.cs_toastQueue count] > 0) {
+                         if ([self.CSF_toastQueue count] > 0) {
                              // dequeue
-                             UIView *nextToast = [[self cs_toastQueue] firstObject];
-                             [[self cs_toastQueue] removeObjectAtIndex:0];
+                             UIView *nextToast = [[self CSF_toastQueue] firstObject];
+                             [[self CSF_toastQueue] removeObjectAtIndex:0];
                              
                              // present the next toast
-                             NSTimeInterval duration = [objc_getAssociatedObject(nextToast, &CSToastDurationKey) doubleValue];
-                             id position = objc_getAssociatedObject(nextToast, &CSToastPositionKey);
-                             [self cs_showToast:nextToast duration:duration position:position];
+                             NSTimeInterval duration = [objc_getAssociatedObject(nextToast, &CSFToastDurationKey) doubleValue];
+                             id position = objc_getAssociatedObject(nextToast, &CSFToastPositionKey);
+                             [self CSF_showToastf:nextToast duration:duration position:position];
                          }
                      }];
 }
 
 #pragma mark - View Construction
 
-- (UIView *)toastViewForMessage:(NSString *)message title:(NSString *)title image:(UIImage *)image style:(CSToastStyle *)style {
+- (UIView *)toastViewForMessagef:(NSString *)message title:(NSString *)title image:(UIImage *)image style:(CSFToastStyle *)style {
     // sanity
     if(message == nil && title == nil && image == nil) return nil;
     
     // default to the shared style
     if (style == nil) {
-        style = [CSToastManager sharedStyle];
+        style = [CSFToastManager sharedStyle];
     }
     
     // dynamically build a toast view with any combination of message, title, & image
@@ -304,47 +304,47 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 
 #pragma mark - Queue
 
-- (NSMutableArray *)cs_toastQueue {
-    NSMutableArray *cs_toastQueue = objc_getAssociatedObject(self, &CSToastQueueKey);
-    if (cs_toastQueue == nil) {
-        cs_toastQueue = [[NSMutableArray alloc] init];
-        objc_setAssociatedObject(self, &CSToastQueueKey, cs_toastQueue, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (NSMutableArray *)CSF_toastQueue {
+    NSMutableArray *CSF_toastQueue = objc_getAssociatedObject(self, &CSFToastQueueKey);
+    if (CSF_toastQueue == nil) {
+        CSF_toastQueue = [[NSMutableArray alloc] init];
+        objc_setAssociatedObject(self, &CSFToastQueueKey, CSF_toastQueue, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    return cs_toastQueue;
+    return CSF_toastQueue;
 }
-- (NSMutableArray *)cs_activeToasts {
-    NSMutableArray *cs_activeToasts = objc_getAssociatedObject(self, &CSToastActiveKey);
-    if (cs_activeToasts == nil) {
-        cs_activeToasts = [[NSMutableArray alloc] init];
-        objc_setAssociatedObject(self, &CSToastActiveKey, cs_activeToasts, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (NSMutableArray *)CSF_activeToasts {
+    NSMutableArray *CSF_activeToasts = objc_getAssociatedObject(self, &CSFToastActiveKey);
+    if (CSF_activeToasts == nil) {
+        CSF_activeToasts = [[NSMutableArray alloc] init];
+        objc_setAssociatedObject(self, &CSFToastActiveKey, CSF_activeToasts, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    return cs_activeToasts;
+    return CSF_activeToasts;
 }
 #pragma mark - Events
 
-- (void)cs_toastTimerDidFinish:(NSTimer *)timer {
-    [self cs_hideToast:(UIView *)timer.userInfo];
+- (void)CSF_toastTimerDidFinish:(NSTimer *)timer {
+    [self CSF_hideToastf:(UIView *)timer.userInfo];
 }
 
-- (void)cs_handleToastTapped:(UITapGestureRecognizer *)recognizer {
+- (void)CSF_handleToastTapped:(UITapGestureRecognizer *)recognizer {
     UIView *toast = recognizer.view;
-    NSTimer *timer = (NSTimer *)objc_getAssociatedObject(toast, &CSToastTimerKey);
+    NSTimer *timer = (NSTimer *)objc_getAssociatedObject(toast, &CSFToastTimerKey);
     [timer invalidate];
     
-    [self cs_hideToast:toast fromTap:YES];
+    [self CSF_hideToastf:toast fromTap:YES];
 }
 
 #pragma mark - Activity Methods
 
-- (void)makeToastActivity:(id)position {
+- (void)makeToastfActivity:(id)position {
     // sanity
-    UIView *existingActivityView = (UIView *)objc_getAssociatedObject(self, &CSToastActivityViewKey);
+    UIView *existingActivityView = (UIView *)objc_getAssociatedObject(self, &CSFToastActivityViewKey);
     if (existingActivityView != nil) return;
     
-    CSToastStyle *style = [CSToastManager sharedStyle];
+    CSFToastStyle *style = [CSFToastManager sharedStyle];
     
     UIView *activityView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, style.activitySize.width, style.activitySize.height)];
-    activityView.center = [self cs_centerPointForPosition:position withToast:activityView];
+    activityView.center = [self CSF_centerPointForPosition:position withToast:activityView];
     activityView.backgroundColor = style.backgroundColor;
     activityView.alpha = 0.0;
     activityView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin);
@@ -363,7 +363,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
     [activityIndicatorView startAnimating];
     
     // associate the activity view with self
-    objc_setAssociatedObject (self, &CSToastActivityViewKey, activityView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject (self, &CSFToastActivityViewKey, activityView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     [self addSubview:activityView];
     
@@ -375,54 +375,54 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
                      } completion:nil];
 }
 
-- (void)hideToastActivity {
-    UIView *existingActivityView = (UIView *)objc_getAssociatedObject(self, &CSToastActivityViewKey);
+- (void)hideToastffActivity {
+    UIView *existingActivityView = (UIView *)objc_getAssociatedObject(self, &CSFToastActivityViewKey);
     if (existingActivityView != nil) {
-        [UIView animateWithDuration:[[CSToastManager sharedStyle] fadeDuration]
+        [UIView animateWithDuration:[[CSFToastManager sharedStyle] fadeDuration]
                               delay:0.0
                             options:(UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionBeginFromCurrentState)
                          animations:^{
                              existingActivityView.alpha = 0.0;
                          } completion:^(BOOL finished) {
                              [existingActivityView removeFromSuperview];
-                             objc_setAssociatedObject (self, &CSToastActivityViewKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                             objc_setAssociatedObject (self, &CSFToastActivityViewKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                          }];
     }
 }
-- (void)hideAllToasts{
-    [self hideAllToasts:NO clearQueue:YES];
+- (void)hideAllToastsf{
+    [self hideAllToastsf:NO clearQueue:YES];
 }
-- (void)hideAllToasts:(BOOL)includeActivity clearQueue:(BOOL)clearQueue {
+- (void)hideAllToastsf:(BOOL)includeActivity clearQueue:(BOOL)clearQueue {
     if (clearQueue) {
-        [self clearToastQueue];
+        [self clearToastQueuef];
     }
     
-    for (UIView *toast in [self cs_activeToasts]) {
-        [self hideToast:toast];
+    for (UIView *toast in [self CSF_activeToasts]) {
+        [self hideToastf:toast];
     }
     
     if (includeActivity) {
-        [self hideToastActivity];
+        [self hideToastffActivity];
     }
 }
-- (void)clearToastQueue {
-    [[self cs_toastQueue] removeAllObjects];
+- (void)clearToastQueuef {
+    [[self CSF_toastQueue] removeAllObjects];
 }
-- (void)hideToast:(UIView *)toast {
+- (void)hideToastf:(UIView *)toast {
     // sanity
-    if (!toast || ![[self cs_activeToasts] containsObject:toast]) return;
+    if (!toast || ![[self CSF_activeToasts] containsObject:toast]) return;
     
-    [self cs_hideToast:toast];
+    [self CSF_hideToastf:toast];
 }
 #pragma mark - Helpers
 
-- (CGPoint)cs_centerPointForPosition:(id)point withToast:(UIView *)toast {
-    CSToastStyle *style = [CSToastManager sharedStyle];
+- (CGPoint)CSF_centerPointForPosition:(id)point withToast:(UIView *)toast {
+    CSFToastStyle *style = [CSFToastManager sharedStyle];
     
     if([point isKindOfClass:[NSString class]]) {
-        if([point caseInsensitiveCompare:CSToastPositionTop] == NSOrderedSame) {
+        if([point caseInsensitiveCompare:CSFToastPositionTop] == NSOrderedSame) {
             return CGPointMake(self.bounds.size.width/2, (toast.frame.size.height / 2) + style.verticalPadding * 2);
-        } else if([point caseInsensitiveCompare:CSToastPositionCenter] == NSOrderedSame) {
+        } else if([point caseInsensitiveCompare:CSFToastPositionCenter] == NSOrderedSame) {
             return CGPointMake(self.bounds.size.width / 2, (self.bounds.size.height / 2));
         }
     } else if ([point isKindOfClass:[NSValue class]]) {
@@ -435,7 +435,7 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 
 @end
 
-@implementation CSToastStyle
+@implementation CSFToastStyle
 
 #pragma mark - Constructors
 
@@ -481,9 +481,9 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 
 @end
 
-@interface CSToastManager ()
+@interface CSFToastManager ()
 
-@property (strong, nonatomic) CSToastStyle *sharedStyle;
+@property (strong, nonatomic) CSFToastStyle *sharedStyle;
 @property (assign, nonatomic, getter=isTapToDismissEnabled) BOOL tapToDismissEnabled;
 @property (assign, nonatomic, getter=isQueueEnabled) BOOL queueEnabled;
 @property (assign, nonatomic) NSTimeInterval defaultDuration;
@@ -491,12 +491,12 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 
 @end
 
-@implementation CSToastManager
+@implementation CSFToastManager
 
 #pragma mark - Constructors
 
 + (instancetype)sharedManager {
-    static CSToastManager *_sharedManager = nil;
+    static CSFToastManager *_sharedManager = nil;
     static dispatch_once_t oncePredicate;
     dispatch_once(&oncePredicate, ^{
         _sharedManager = [[self alloc] init];
@@ -508,22 +508,22 @@ static const NSString * CSToastQueueKey             = @"CSToastQueueKey";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.sharedStyle = [[CSToastStyle alloc] initWithDefaultStyle];
+        self.sharedStyle = [[CSFToastStyle alloc] initWithDefaultStyle];
         self.tapToDismissEnabled = YES;
         self.queueEnabled = YES;
         self.defaultDuration = 3.0;
-        self.defaultPosition = CSToastPositionCenter;
+        self.defaultPosition = CSFToastPositionCenter;
     }
     return self;
 }
 
 #pragma mark - Singleton Methods
 
-+ (void)setSharedStyle:(CSToastStyle *)sharedStyle {
++ (void)setSharedStyle:(CSFToastStyle *)sharedStyle {
     [[self sharedManager] setSharedStyle:sharedStyle];
 }
 
-+ (CSToastStyle *)sharedStyle {
++ (CSFToastStyle *)sharedStyle {
     return [[self sharedManager] sharedStyle];
 }
 
