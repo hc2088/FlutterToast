@@ -375,7 +375,7 @@ static const NSString * CSFToastQueueKey             = @"CSFToastQueueKey";
                      } completion:nil];
 }
 
-- (void)hideToastffActivity {
+- (void)hidefToastActivity {
     UIView *existingActivityView = (UIView *)objc_getAssociatedObject(self, &CSFToastActivityViewKey);
     if (existingActivityView != nil) {
         [UIView animateWithDuration:[[CSFToastManager sharedStyle] fadeDuration]
@@ -402,7 +402,7 @@ static const NSString * CSFToastQueueKey             = @"CSFToastQueueKey";
     }
     
     if (includeActivity) {
-        [self hideToastffActivity];
+        [self hidefToastActivity];
     }
 }
 - (void)clearToastQueuef {
