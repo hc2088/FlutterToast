@@ -1,3 +1,6 @@
+## [7.0.3+1]
+- 修改键盘弹过之后，toast无法弹出问题
+
 ## [7.0.2]
 
 - iOS Toast behind keyboard fixed. #203
