@@ -1,11 +1,12 @@
 #import "FluttertoastPlugin.h"
-#import <Toast/UIView+Toast.h>
+#import "UIView+Toastf.h"
 
 static NSString *const CHANNEL_NAME = @"PonnamKarthik/fluttertoast";
 
 @interface FluttertoastPlugin ()
 @property(nonatomic, retain) FlutterMethodChannel *channel;
 @property(nonatomic, assign) BOOL isKeyboardVisible;
+
 @end
 
 @implementation FluttertoastPlugin {
@@ -59,8 +60,9 @@ static NSString *const CHANNEL_NAME = @"PonnamKarthik/fluttertoast";
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
     if([@"cancel" isEqualToString:call.method]) {
+        //[[UIApplication sharedApplication].delegate.window.rootViewController.view hideAllToastsf];
         __weak typeof(self) weakSelf = self;
-        [[weakSelf _readKeyWindow] hideAllToasts];
+        [[weakSelf _readKeyWindow] hideAllToastsf];
         result([NSNumber numberWithBool:true]);
     } else if ([@"showToast" isEqualToString:call.method]) {
         NSString *msg = call.arguments[@"msg"];
@@ -87,26 +89,23 @@ static NSString *const CHANNEL_NAME = @"PonnamKarthik/fluttertoast";
         else if (time < 1) time = 1;
 
 
-        CSToastStyle *style = [[CSToastStyle alloc] initWithDefaultStyle];
+        CSFToastStyle *style = [[CSFToastStyle alloc] initWithDefaultStyle];
         style.messageFont = [UIFont systemFontOfSize:cgf];
         style.backgroundColor = [self colorWithHex:bgcolor.unsignedIntegerValue];
         style.messageColor = [self colorWithHex:textcolor.unsignedIntegerValue];
 
-//        if (@available(iOS 11.0, *)) {
-//            UIWindow *window = UIApplication.sharedApplication.keyWindow;
-//        }
-
         if ([gravity isEqualToString:@"top"]) {
             
-            [self makeToast:msg duration:time position:CSToastPositionTop style:style];
+            [self makeToast:msg duration:time position:CSFToastPositionTop style:style];
+            
             
         } else if ([gravity isEqualToString:@"center"]) {
             
-            [self makeToast:msg duration:time position:CSToastPositionCenter style:style];
+            [self makeToast:msg duration:time position:CSFToastPositionCenter style:style];
             
         } else {
             
-            [self makeToast:msg duration:time position:CSToastPositionBottom style:style];
+            [self makeToast:msg duration:time position:CSFToastPositionBottom style:style];
             
         }
         result([NSNumber numberWithBool:true]);
@@ -116,11 +115,11 @@ static NSString *const CHANNEL_NAME = @"PonnamKarthik/fluttertoast";
     }
 }
 
-- (void)makeToast:(NSString *)message duration:(NSTimeInterval)duration position:(id)position style:(CSToastStyle *)style {
+- (void)makeToast:(NSString *)message duration:(NSTimeInterval)duration position:(id)position style:(CSFToastStyle *)style {
     __weak typeof(self) weakSelf = self;
     // Fixed if the keyboard disappear, the toast disappear at once, because the window where the keyboard is is gone.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[weakSelf _readKeyWindow] makeToast:message duration:duration position:position style:style];
+        [[weakSelf _readKeyWindow] makeToastf:message duration:duration position:position style:style];
     });
 }
 
@@ -137,6 +136,9 @@ static NSString *const CHANNEL_NAME = @"PonnamKarthik/fluttertoast";
         }
     }
     return nil;
+
+    //return [[UIApplication sharedApplication].windows lastObject];
+    //return [[UIApplication sharedApplication] keyWindow];
 }
 
 @end
