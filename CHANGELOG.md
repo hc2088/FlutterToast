@@ -1,8 +1,55 @@
-## [7.0.3+2]
-- 修改android配置
+## [7.1.8]
 
-## [7.0.3+1]
-- 修改键盘弹过之后，toast无法弹出问题
+- Web sourceMap Warning
+
+## [7.1.7]
+
+- '\n' line crash on Web PR Merged
+- Android 11 Crash fixed
+- Many bug fixes
+
+## [7.1.6]
+
+- minor fixes
+
+## [7.1.4]
+
+- minor fixes
+
+## [7.1.3]
+
+- Android Default bg when fontSize or textColor set fixed
+
+## [7.1.2]
+
+- Android Rounded Corners fix (#238)
+- Android Crash if cancel called before init (#231)
+- Web now load js & css from assets
+- Web SyntaxError if Toast msg has `'` fixed
+
+## [7.1.1]
+
+- iOS Unused variables fix
+
+## [7.1.0]
+
+- Breaking change for FToast, Need to call `FToast.init(context)` before `showToast`
+- AnimationController fix
+- Android `NonNull` build Fix
+- FToast Added new `PositionedToastBuilder` you can define Custom Postition now for toast
+- Merged #228, Fix UIView+Toast.o duplicate symbols - Thanks @jackkang0401 and @yongshuai.kang
+- Now `textcolor` will work for web toast
+
+## [7.0.4]
+
+- iOS Build Failed Fixed #218
+- Fixed Cancel Toasts in iOS
+
+## [7.0.3]
+
+- FToast now Fade when showing and hiding the toast
+- Toast backgroud now supports transparency
+- Bug fixes
 
 ## [7.0.2]
 

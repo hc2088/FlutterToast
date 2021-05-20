@@ -1,7 +1,9 @@
 
 # [fluttertoast](https://pub.dartlang.org/packages/fluttertoast)  
-  
+
 Toast Library for Flutter
+
+![Build Checks](https://github.com/ponnamkarthik/FlutterToast/workflows/Build%20Checks/badge.svg)
 
 Now this toast library supports two kinds of toast messages one which requires `BuildContext` other with No `BuildContext`
 
@@ -32,14 +34,14 @@ This one has limited features and no control over UI
 
 ```yaml
 # add this line to your dependencies
-fluttertoast_renameuiviewtoast: ^7.0.3+2
+fluttertoast: ^7.1.6
 ```
 
 ```dart
 import 'package:fluttertoast/fluttertoast.dart';
 ```
 
-## Toast with No Build Context
+## Toast with No Build Context (Android & iOS)
 
 ```dart
 Fluttertoast.showToast(
@@ -58,10 +60,10 @@ Fluttertoast.showToast(
 | msg             | String (Not Null)(required)                                        |required    |
 | toastLength     | Toast.LENGTH_SHORT or Toast.LENGTH_LONG (optional)                 |Toast.LENGTH_SHORT  |
 | gravity         | ToastGravity.TOP (or) ToastGravity.CENTER (or) ToastGravity.BOTTOM (Web Only supports top, bottom) | ToastGravity.BOTTOM    |
-| timeInSecForIosWeb | int (only for ios)                                                 | 1       |
-| backgroundColor         | Colors.red                                                         |Colors.black    |
-| textcolor       | Colors.white                                                       |Colors.white    |
-| fontSize        | 16.0 (float)                                                       | 16.0       |
+| timeInSecForIosWeb | int (for ios & web)                                                 | 1  (sec)     |
+| backgroundColor         | Colors.red                                                         |null   |
+| textcolor       | Colors.white                                                       |null    |
+| fontSize        | 16.0 (float)                                                       | null      |
 | webShowClose    | false (bool)                                                       | false      |
 | webBgColor      | String (hex Color)                                                 | linear-gradient(to right, #00b09b, #96c93d) |
 | webPosition     | String (`left`, `center` or `right`)                                | right     |
@@ -71,6 +73,14 @@ Fluttertoast.showToast(
 ```dart
 Fluttertoast.cancel()
 ```
+
+### Note Android
+
+<img src="https://raw.githubusercontent.com/ponnamkarthik/FlutterToast/master/screenshot/toast_deprecated_setview.png" height="200px" />
+
+
+> Custom Toast will not work on android 11 and above, it will only use *msg* and *toastLength* remaining all properties are ignored
+
 
 ### Custom Toast For Android
 
@@ -102,7 +112,7 @@ Create a file named `toast_custom.xml` in your project `app/res/layout` folder a
 </FrameLayout>
 ```
 
-## Toast with BuildContext
+## Toast with BuildContext (All Platforms)
   
 ```dart 
 FToast fToast;
@@ -110,7 +120,8 @@ FToast fToast;
 @override
 void initState() {
     super.initState();
-    fToast = FToast(context);
+    fToast = FToast();
+    fToast.init(context);
 }
 
 _showToast() {
@@ -138,6 +149,18 @@ _showToast() {
         gravity: ToastGravity.BOTTOM,
         toastDuration: Duration(seconds: 2),
     );
+    
+    // Custom Toast Position
+    fToast.showToast(
+        child: toast,
+        toastDuration: Duration(seconds: 2),
+        positionedToastBuilder: (context, child) {
+          return Positioned(
+            child: child,
+            top: 16.0,
+            left: 16.0,
+          );
+        });
 }
 
 ```  
@@ -177,6 +200,9 @@ fToast.removeQueuedCustomToasts();
 
 ...
 
+## Help needed for iOS 
+
+Looking for iOS Dev who can check out and fix the issues releated to iOS (I dont have a Mac and iOS)
 
 ## Buy Me a Coffee
 

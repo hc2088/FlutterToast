@@ -17,8 +17,6 @@ class FluttertoastWebPlugin {
   Future<dynamic> handleMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'showToast':
-        print("showToast");
-        print(call.arguments);
         showToast(call.arguments);
         return true;
       default:
@@ -40,34 +38,36 @@ class FluttertoastWebPlugin {
 
     String bgColor = args['webBgColor'] ?? "linear-gradient(to right, #00b09b, #96c93d)";
 
+    int textColor = args['textcolor'];
+
     int time = args['time'] == null ? 3000 : (int.parse(args['time'].toString()) * 1000);
 
     bool showClose = args['webShowClose'] ?? false;
 
-    addHtmlToast(msg: msg, gravity: gravity, position: position, bgcolor: bgColor, showClose: showClose, time: time);
+    addHtmlToast(msg: msg, gravity: gravity, position: position, bgcolor: bgColor, showClose: showClose, time: time, textColor: textColor);
   }
 
   Future<void> injectCssAndJSLibraries() async {
     final List<Future<void>> loading = <Future<void>>[];
     final List<html.HtmlElement> tags = <html.HtmlElement>[];
 
-    final html.StyleElement css = html.StyleElement()
+    final html.LinkElement css = html.LinkElement()
       ..id = 'toast-css'
-      ..appendText("@import url('https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css');");
+      ..attributes = {
+        "rel": "stylesheet"
+      }
+      ..href = 'assets/packages/fluttertoast/assets/toastify.css';
     tags.add(css);
 
     final html.ScriptElement script = html.ScriptElement()
       ..async = true
-      ..defer = true
-      ..src = "https://cdn.jsdelivr.net/npm/toastify-js";
+      // ..defer = true
+      ..src = "assets/packages/fluttertoast/assets/toastify.js";
     loading.add(script.onLoad.first);
     tags.add(script);
     html.querySelector('head').children.addAll(tags);
 
     await Future.wait(loading);
-
-    // addHtmlToast();
-    // addHtmlToast();
   }
 
   addHtmlToast(
@@ -76,12 +76,13 @@ class FluttertoastWebPlugin {
       String position = "right",
       String bgcolor = "linear-gradient(to right, #00b09b, #96c93d)",
       int time = 3000,
-      bool showClose = false}) {
-    print(html.querySelector("#toast-content"));
+      bool showClose = false,
+      int textColor}) {
+    String m = msg.replaceAll("'", "\\'").replaceAll("\n", "<br />");
     html.Element ele = html.querySelector("#toast-content");
     String content = """
           var toastElement = Toastify({
-            text: '$msg',
+            text: '$m',
             gravity: '$gravity',
             position: '$position',
             duration: $time,
@@ -97,5 +98,11 @@ class FluttertoastWebPlugin {
       ..id = "toast-content"
       ..innerHtml = content;
     html.querySelector('head').children.add(scriptText);
+    if (textColor != null) {
+      html.Element toast = html.querySelector('.toastify');
+      String tcRadix = textColor.toRadixString(16);
+      final String tC = "${tcRadix.substring(2)}${tcRadix.substring(0, 2)}";
+      toast.style.setProperty('color', "#$tC");
+    }
   }
 }

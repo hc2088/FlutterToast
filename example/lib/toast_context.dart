@@ -1,5 +1,6 @@
+import 'package:FlutterToast_example/main.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast_renameuiviewtoast/fluttertoast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ToastContext extends StatefulWidget {
   @override
@@ -33,6 +34,20 @@ class _ToastContextState extends State<ToastContext> {
       gravity: ToastGravity.BOTTOM,
       toastDuration: Duration(seconds: 2),
     );
+  }
+
+  _showBuilderToast() {
+    fToast.showToast(
+        child: toast,
+        gravity: ToastGravity.BOTTOM,
+        toastDuration: Duration(seconds: 2),
+        positionedToastBuilder: (context, child) {
+          return Positioned(
+            child: child,
+            top: 16.0,
+            left: 16.0,
+          );
+        });
   }
 
   _showToastCancel() {
@@ -112,7 +127,8 @@ class _ToastContextState extends State<ToastContext> {
   @override
   void initState() {
     super.initState();
-    fToast = FToast(context);
+    fToast = FToast();
+    fToast.init(globalKey.currentState.context);
   }
 
   @override
@@ -130,6 +146,12 @@ class _ToastContextState extends State<ToastContext> {
             child: Text("Show Custom Toast"),
             onPressed: () {
               _showToast();
+            },
+          ),
+          RaisedButton(
+            child: Text("Show Custom Toast via PositionedToastBuilder"),
+            onPressed: () {
+              _showBuilderToast();
             },
           ),
           SizedBox(
